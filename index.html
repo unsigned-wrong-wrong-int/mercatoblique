@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja">
+   <head>
+      <meta charset="utf-8">
+      <title>斜めのメルカトル図法、斜めルカトル図法</title>
+      <script src="./script.js" type="module"></script>
+      <style>
+         h1, #params, #map, footer {
+            margin: 1em;
+         }
+         #params {
+            display: grid;
+            grid-template-columns: 6em 6em 1fr;
+            row-gap: 8px;
+         }
+         #params>span {
+            margin-left: 16px;
+         }
+         input, button {
+            font: inherit;
+         }
+         footer {
+            font-size: small;
+            color: #333;
+         }
+      </style>
+   </head>
+   <body>
+      <h1>斜めのメルカトル図法、斜めルカトル図法</h1>
+      <div id="params">
+         <label for="lng">中心経度</label>
+         <input id="lng" type="number" min="-179.9" max="180" step="0.1" value="135">
+         <span>-179.9°(W)～180.0°(E)</span>
+         <label for="lat">中心緯度</label>
+         <input id="lat" type="number" min="-89.9" max="90" step="0.1" value="135">
+         <span>-89.9°(S)～90.0°(N)</span>
+         <label for="tilt">傾き</label>
+         <input id="tilt" type="number" min="0" max="359.9" step="0.1" value="135">
+         <span>0.0°～359.9°</span>
+         <button id="rand">ランダム</button>
+      </div>
+      <canvas id="map" width="720" height="720"></canvas>
+      <footer>Made with Natural Earth. Free vector and raster map data @ naturalearthdata.com.</footer>
+   </body>
+</html>
