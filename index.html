@@ -5,7 +5,7 @@
       <title>斜めのメルカトル図法、斜めルカトル図法</title>
       <script src="./script.js" type="module"></script>
       <style>
-         h1, #params, #share, #map, #text, footer {
+         h1, #params, #share, #map, #text, p, footer {
             margin: 0.5em 1em;
          }
          #params {
@@ -31,6 +31,11 @@
    </head>
    <body>
       <h1>斜めのメルカトル図法、斜めルカトル図法</h1>
+      <p>
+         地球楕円体面を球面に等角写像で投影した後、斜軸メルカトル図法で円筒面に投影します。<br>
+         地図の中心となる点の座標と、円柱の傾きを自由に変化させられます。
+      </p>
+      <hr>
       <div id="params">
          <label for="lat">中心緯度</label>
          <input id="lat" type="number" min="-89.9" max="90" step="0.1" value="135">
