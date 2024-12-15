@@ -172,7 +172,7 @@ const MapData = class {
 ${params[1] < 0 ? `${(-params[1]).toFixed(1)}°S` : `${params[1].toFixed(1)}°N`},\
 ${params[0] < 0 ? `${(-params[0]).toFixed(1)}°W` : `${params[0].toFixed(1)}°E`},\
 ${params[2].toFixed(1)}°
-${location.href}?p=${params.join("_")}
+${location.href}?p=${params.join("_")}\
 `;
    };
    inputs.forEach(elem => elem.addEventListener("input", update));
