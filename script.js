@@ -122,31 +122,39 @@ const MapData = class {
       document.getElementById("lat"),
       document.getElementById("tilt"),
    ];
+   const text = document.getElementById("text");
    const randBtn = document.getElementById("rand");
+   const copyTextBtn = document.getElementById("copy-text");
+   const copyImgBtn = document.getElementById("copy-img");
 
    const context = canvas.getContext("2d");
-   const scale = 2;
-   // https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Optimizing_canvas#scaling_for_high_resolution_displays
-   const dpr = devicePixelRatio;
-   const rect = canvas.getBoundingClientRect();
-   canvas.width = rect.width * dpr;
-   canvas.height = rect.height * dpr;
-   context.scale(dpr * scale, dpr * -scale);
-   context.translate(180, -180);
-   canvas.style.width = `${rect.width}px`;
-   canvas.style.height = `${rect.height}px`;
+   {
+      const scale = 2;
+      // https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Optimizing_canvas#scaling_for_high_resolution_displays
+      const dpr = devicePixelRatio;
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      context.scale(dpr * scale, dpr * -scale);
+      context.translate(180, -180);
+      canvas.style.width = `${rect.width}px`;
+      canvas.style.height = `${rect.height}px`;
+   }
 
    const data = new MapData();
-   await data.load("coastline", "ne_110m_coastline.shp");
-   await data.load("boundary", "ne_110m_admin_0_boundary_lines_land.shp");
-   await data.load("lakes", "ne_110m_lakes.shp");
-   await data.load("graticules", "ne_110m_graticules_30.shp");
+   {
+      await data.load("coastline", "ne_110m_coastline.shp");
+      await data.load("boundary", "ne_110m_admin_0_boundary_lines_land.shp");
+      await data.load("lakes", "ne_110m_lakes.shp");
+      await data.load("graticules", "ne_110m_graticules_30.shp");
+   }
 
    const update = () => {
       for (const elem of inputs) {
          if (!elem.reportValidity()) return;
       }
-      data.projectWithRotation(+inputs[0].value, +inputs[1].value, +inputs[2].value);
+      const params = [+inputs[0].value, +inputs[1].value, +inputs[2].value];
+      data.projectWithRotation(...params);
       context.clearRect(...MAP_BOUND_RECT);
       context.fillStyle = "#ffffff";
       context.fillRect(...MAP_BOUND_RECT);
@@ -159,6 +167,13 @@ const MapData = class {
       context.stroke(data.getPath2D("graticules"));
       context.strokeStyle = "#000000";
       context.strokeRect(...MAP_BOUND_RECT);
+      text.innerText = `\
+斜めのメルカトル図法、斜めルカトル図法
+${params[1] < 0 ? `${(-params[1]).toFixed(1)}°S` : `${params[1].toFixed(1)}°N`},\
+${params[0] < 0 ? `${(-params[0]).toFixed(1)}°W` : `${params[0].toFixed(1)}°E`},\
+${params[2].toFixed(1)}°
+${location.href}?p=${params.join("_")}
+`;
    };
    inputs.forEach(elem => elem.addEventListener("input", update));
 
@@ -170,5 +185,29 @@ const MapData = class {
    };
    randBtn.addEventListener("click", random);
 
-   random();
+   const copyText = () => {
+      navigator.clipboard.writeText(text.innerText);
+   };
+   copyTextBtn.addEventListener("click", copyText);
+
+   const copyImg = () => {
+      canvas.toBlob(img => {
+         if (img === null) return;
+         navigator.clipboard.write([new ClipboardItem({[img.type]: img})]);
+      });
+   };
+   copyImgBtn.addEventListener("click", copyImg);
+
+   {
+      const url = new URL(location.href);
+      if (url.searchParams.has("p")) {
+         [inputs[0].value, inputs[1].value, inputs[2].value] =
+            url.searchParams.get("p").split("_");
+         url.searchParams.delete("p");
+         history.replaceState(null, "", url);
+         update();
+      } else {
+         random();
+      }
+   }
 }
