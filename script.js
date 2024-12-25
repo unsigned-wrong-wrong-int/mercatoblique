@@ -162,6 +162,7 @@ const MapData = class {
       context.strokeStyle = "#000000";
       context.stroke(data.getPath2D("coastline"));
       context.stroke(data.getPath2D("boundary"));
+      context.strokeStyle = "#222222";
       context.stroke(data.getPath2D("lakes"));
       context.strokeStyle = "#cccccccc";
       context.stroke(data.getPath2D("graticules"));
